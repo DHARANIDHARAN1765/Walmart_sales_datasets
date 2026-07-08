@@ -55,7 +55,7 @@ This project is an end-to-end data analysis solution designed to extract critica
 
 ### 9. SQL Analysis: Complex Queries and Business Problem Solving
    - **Business Problem-Solving**: Write and execute complex SQL queries to answer critical business questions, such as:
-Find the different payment methods along with the number of transactions and total quantity sold.
+   - **Find the different payment methods along with the number of transactions and total quantity sold.**
 ```sq
 SELECT
     payment_method,
@@ -64,7 +64,7 @@ SELECT
 FROM walmart
 GROUP BY payment_method;
 ```
-Identify the highest-rated category in each branch by displaying the branch, category, and average rating.
+   - **Identify the highest-rated category in each branch by displaying the branch, category, and average rating.**
 ```sq
 SELECT *
 FROM
@@ -83,7 +83,7 @@ FROM
 ) AS t
 WHERE rnk = 1;
 ```
-     - Identify the busiest day for each branch based on the number of transactions.
+   - **Identify the busiest day for each branch based on the number of transactions.**
 ```sq
 SELECT *
 FROM
@@ -104,7 +104,7 @@ FROM
 ) AS t
 WHERE rnk = 1;
 ```
-     - Calculate the total quantity of items sold for each payment method.
+   - **Calculate the total quantity of items sold for each payment method.**
 ```sq
 SELECT
     payment_method,
@@ -112,7 +112,7 @@ SELECT
 FROM walmart
 GROUP BY payment_method;
 ```
-     - Determine the average, minimum, and maximum rating of each category for every city.
+   - **Determine the average, minimum, and maximum rating of each category for every city.**
 ```sq
 SELECT
     city,
@@ -122,8 +122,8 @@ SELECT
     AVG(rating) AS avg_rating
 FROM walmart
 GROUP BY city, category;
-```  
-     - Calculate the total profit for each category using the formula.
+```
+   - **Calculate the total profit for each category using the formula.**
 ```sq
 SELECT
     category,
@@ -133,7 +133,7 @@ FROM walmart
 GROUP BY category
 ORDER BY profit DESC;
 ```  
-     - Determine the most common payment method for each branch.
+   - **Determine the most common payment method for each branch.**
 ```sq
 WITH cte AS
 (
@@ -155,7 +155,7 @@ FROM cte
 WHERE rnk = 1;
 ```
      
-     - Categorize sales into Morning, Afternoon, and Evening, and find the number of invoices in each shift for every branch.
+   - **Categorize sales into Morning, Afternoon, and Evening, and find the number of invoices in each shift for every branch.**
 ```sq
 SELECT
     branch,
@@ -174,7 +174,7 @@ ORDER BY
     no_of_invoices DESC;
 ```
      
-     - Identify the top 5 branches with the highest revenue decrease ratio from 2022 to 2023.
+   - **Identify the top 5 branches with the highest revenue decrease ratio from 2022 to 2023.**
 ```sq
 WITH revenue_2022 AS
 (
