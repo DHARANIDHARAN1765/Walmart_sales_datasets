@@ -55,18 +55,160 @@ This project is an end-to-end data analysis solution designed to extract critica
 
 ### 9. SQL Analysis: Complex Queries and Business Problem Solving
    - **Business Problem-Solving**: Write and execute complex SQL queries to answer critical business questions, such as:
-     - Revenue trends across branches and categories.
+     - Find the different payment methods along with the number of transactions and total quantity sold.
 ```sq
-select city,
-category,min(rating) as min_rating,max(rating) as max_rating,avg(rating) as avg_rating
-from walmart
-group by city, category;
-```    
+SELECT
+    payment_method,
+    COUNT(*) AS no_payments,
+    SUM(quantity) AS no_qty_sold
+FROM walmart
+GROUP BY payment_method;
+```
+     - Identify the highest-rated category in each branch by displaying the branch, category, and average rating.
+```sq
+SELECT *
+FROM
+(
+    SELECT
+        branch,
+        category,
+        AVG(rating) AS avg_rating,
+        RANK() OVER
+        (
+            PARTITION BY branch
+            ORDER BY AVG(rating) DESC
+        ) AS rnk
+    FROM walmart
+    GROUP BY branch, category
+) AS t
+WHERE rnk = 1;
+```
+     - Identify the busiest day for each branch based on the number of transactions.
+```sq
+SELECT *
+FROM
+(
+    SELECT
+        branch,
+        DAYNAME(STR_TO_DATE(date, '%d/%m/%y')) AS day_name,
+        COUNT(*) AS no_transaction,
+        RANK() OVER
+        (
+            PARTITION BY branch
+            ORDER BY COUNT(*) DESC
+        ) AS rnk
+    FROM walmart
+    GROUP BY
+        branch,
+        DAYNAME(STR_TO_DATE(date, '%d/%m/%y'))
+) AS t
+WHERE rnk = 1;
+```
+     - Calculate the total quantity of items sold for each payment method.
+```sq
+SELECT
+    payment_method,
+    SUM(quantity) AS no_qty_sold
+FROM walmart
+GROUP BY payment_method;
+```
+     - Determine the average, minimum, and maximum rating of each category for every city.
+```sq
+SELECT
+    city,
+    category,
+    MIN(rating) AS min_rating,
+    MAX(rating) AS max_rating,
+    AVG(rating) AS avg_rating
+FROM walmart
+GROUP BY city, category;
+```  
+     - Calculate the total profit for each category using the formula.
+```sq
+SELECT
+    category,
+    SUM(total) AS total_revenue,
+    SUM(total * profit_margin) AS profit
+FROM walmart
+GROUP BY category
+ORDER BY profit DESC;
+```  
+     - Determine the most common payment method for each branch.
+```sq
+WITH cte AS
+(
+    SELECT
+        branch,
+        payment_method,
+        COUNT(*) AS total_trans,
+        RANK() OVER
+        (
+            PARTITION BY branch
+            ORDER BY COUNT(*) DESC
+        ) AS rnk
+    FROM walmart
+    GROUP BY branch, payment_method
+)
 
-     - Identifying best-selling product categories.
-     - Sales performance by time, city, and payment method.
-     - Analyzing peak sales periods and customer buying patterns.
-     - Profit margin analysis by branch and category.
+SELECT *
+FROM cte
+WHERE rnk = 1;
+```
+     
+     - Categorize sales into Morning, Afternoon, and Evening, and find the number of invoices in each shift for every branch.
+```sq
+SELECT
+    branch,
+    CASE
+        WHEN EXTRACT(HOUR FROM STR_TO_DATE(time, '%H:%i:%s')) < 12 THEN 'Morning'
+        WHEN EXTRACT(HOUR FROM STR_TO_DATE(time, '%H:%i:%s')) BETWEEN 12 AND 17 THEN 'Afternoon'
+        ELSE 'Evening'
+    END AS day_time,
+    COUNT(*) AS no_of_invoices
+FROM walmart
+GROUP BY
+    branch,
+    day_time
+ORDER BY
+    branch,
+    no_of_invoices DESC;
+```
+     
+     - Identify the top 5 branches with the highest revenue decrease ratio from 2022 to 2023.
+```sq
+WITH revenue_2022 AS
+(
+    SELECT
+        branch,
+        SUM(total) AS revenue
+    FROM walmart
+    WHERE YEAR(STR_TO_DATE(date,'%d/%m/%Y')) = 2022
+    GROUP BY branch
+),
+
+revenue_2023 AS
+(
+    SELECT
+        branch,
+        SUM(total) AS revenue
+    FROM walmart
+    WHERE YEAR(STR_TO_DATE(date,'%d/%m/%Y')) = 2023
+    GROUP BY branch
+)
+
+SELECT
+    ls.branch,
+    ls.revenue AS last_year_revenue,
+    cs.revenue AS current_year_revenue,
+    ROUND(((ls.revenue - cs.revenue) / ls.revenue) * 100, 2) AS decrease_ratio
+FROM revenue_2022 AS ls
+JOIN revenue_2023 AS cs
+ON ls.branch = cs.branch
+WHERE ls.revenue > cs.revenue
+ORDER BY decrease_ratio DESC
+LIMIT 5;
+```
+   
    - **Documentation**: Keep clear notes of each query's objective, approach, and results.
 
 ### 10. Project Publishing and Documentation
