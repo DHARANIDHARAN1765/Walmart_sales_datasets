@@ -55,7 +55,7 @@ This project is an end-to-end data analysis solution designed to extract critica
 
 ### 9. SQL Analysis: Complex Queries and Business Problem Solving
    - **Business Problem-Solving**: Write and execute complex SQL queries to answer critical business questions, such as:
-     - Find the different payment methods along with the number of transactions and total quantity sold.
+Find the different payment methods along with the number of transactions and total quantity sold.
 ```sq
 SELECT
     payment_method,
@@ -64,7 +64,7 @@ SELECT
 FROM walmart
 GROUP BY payment_method;
 ```
-     - Identify the highest-rated category in each branch by displaying the branch, category, and average rating.
+Identify the highest-rated category in each branch by displaying the branch, category, and average rating.
 ```sq
 SELECT *
 FROM
